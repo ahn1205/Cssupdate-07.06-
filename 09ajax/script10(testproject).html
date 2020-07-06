@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="map" style="width:500px;height:400px;"></div>
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e2bc77ca67693e7633f95f1e279e4985"></script>
+    <script>
+
+
+        fetch(`http://openapi.seoul.go.kr:8088/6363676c6962686335364b69517547/JSON/SdeWarnhydrantgt/1/5/`).then(function (response) {
+            console.log(response);
+            if (response.status !== 200) {
+                alert("서버와의 통신 실패!");
+                return;
+            } else {
+                return response.json();
+            }
+        }).then(function (jsonData) {
+            console.log(jsonData);
+            
+            for(var i=0; i<jsonData.SdeWarnhydrantgt.row.length;i++) {
+            var lat = jsonData.SdeWarnhydrantgt.row[i].X;
+            var lng = jsonData.SdeWarnhydrantgt.row[i].Y;
+            console.log(lat);
+            console.log(lng);
+
+
+            var coords = new daum.maps.Coords(lat * 2.5, lng * 2.5); // wtm * 2.5 필요
+            var latlng = coords.toLatLng(); // 변환
+            console.log(latlng.getLng());
+            console.log(latlng.getLat());
+
+            var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+                mapOption = {
+                    center: new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()), // 지도의 중심좌표
+                    level: 3 // 지도의 확대 레벨
+                };
+
+            var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+            
+
+                
+                // 마커가 표시될 위치입니다 
+                var markerPosition = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng());
+                
+                // 마커를 생성합니다
+                var marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
+                
+                // 마커가 지도 위에 표시되도록 설정합니다
+                marker.setMap(map);
+                
+                // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
+                // marker.setMap(null); 
+                
+                
+            }
+
+        });
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
